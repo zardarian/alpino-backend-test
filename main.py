@@ -1,15 +1,22 @@
-from typing import Union
-
 from fastapi import FastAPI
+from src.payload.router import router as payload_router
+from src.database import Base, engine
+from src.config import settings
 
-app = FastAPI()
+def create_app() -> FastAPI:
+    # Initialize FastAPI
+    app = FastAPI()
 
+    # Include routers
+    app.include_router(payload_router)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+    # Create tables if not exists
+    Base.metadata.create_all(bind=engine)
 
+    return app
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+app = create_app()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
