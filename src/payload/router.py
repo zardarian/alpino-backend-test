@@ -30,7 +30,7 @@ async def create_payload(payload: schemas.PayloadCreate, db: Session = Depends(g
 
     # Insert into payload
     db_payload = queries.create_payload(db=db, payload_data=payload, result=result)
-
+    print(db_payload)
     return db_payload
 
 @router.get("/payload/{id}", response_model=schemas.PayloadRead)
